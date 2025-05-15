@@ -1,4 +1,3 @@
-// You can embed this using an iframe in Squarespace by uploading the HTML/JS somewhere like Github Pages or an external host
 let shapes = [];
 let stages = [];
 let currentStage = 0;
@@ -19,8 +18,6 @@ let speedRampStart = null;
 let disappearAfter = 4000;
 
 function setup() {
-  squiggleAmplitude = 10 + currentStage * 2;
-  squiggleFrequency = 2 + currentStage * 0.2;
   createCanvas(windowWidth, windowHeight);
   centerX = width / 2;
   centerY = height / 2;
@@ -39,6 +36,7 @@ function draw() {
   noStroke();
   fill(blendedBg.levels[0], blendedBg.levels[1], blendedBg.levels[2], 10);
   rect(0, 0, width, height);
+
   let t = transitioning ? (millis() - transitionStart) / transitionDuration : 0;
   t = constrain(t, 0, 1);
 
@@ -101,6 +99,17 @@ function mouseReleased() {
   }
 }
 
+// Mobile support
+function touchStarted() {
+  mousePressed();
+  return false;
+}
+
+function touchEnded() {
+  mouseReleased();
+  return false;
+}
+
 function initStages() {
   for (let i = 0; i < 15; i++) {
     stages.push({
@@ -153,7 +162,7 @@ class OrbitingShape {
     this.angle = angle;
     this.radius = radius;
     this.speed = random(0.01, 0.03);
-    this.size = size * 2;
+    this.size = (size * 2) * (windowWidth < 600 ? 1.4 : 1); // larger on mobile
     this.isHeld = false;
     this.overrideX = null;
     this.overrideY = null;
